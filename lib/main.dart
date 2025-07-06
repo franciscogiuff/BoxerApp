@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp(const MyApp());
@@ -135,7 +136,7 @@ class _HomeBodyState extends State<HomeBody> {
             border: Border.all(color: Colors.indigo),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Text("Espacio publicitario."),
+          child: const Text("https://www.linkedin.com/in/francisco-giuffrida/"),
         ),
       ],
     );
@@ -164,6 +165,8 @@ class _IntervalTimerScreenState extends State<IntervalTimerScreen> {
   bool esTrabajo = true;
   Timer? timer;
   bool enPausa = false;
+  final player = AudioPlayer();
+  bool hizoBeep = false;
 
   @override
   void initState() {
@@ -175,28 +178,46 @@ class _IntervalTimerScreenState extends State<IntervalTimerScreen> {
 
   void iniciarTemporizador() {
     timer?.cancel();
-    timer = Timer.periodic(const Duration(seconds: 1), (t) {
+    player.play(AssetSource('sounds/bell.mp3'));
+
+    timer = Timer.periodic(const Duration(seconds: 1), (t) async {
       if (!mounted || enPausa) return;
+
+      final duracionActual = esTrabajo ? widget.trabajoSeg : widget.descansoSeg;
+
       setState(() {
         if (tiempoRestante > 0) {
           tiempoRestante--;
+
+          // 🔔 Beep cuando quedan 10 segundos (solo si la etapa dura 10 segundos o más)
+          if (duracionActual >= 10 && tiempoRestante == 10 && !hizoBeep) {
+            player.play(AssetSource('sounds/beep.mp3'));
+            hizoBeep = true;
+          }
         } else {
+
           if (!esTrabajo && roundActual == widget.rounds) {
             timer?.cancel();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const FinalScreen()),
+            );
             return;
           }
 
-          if (!esTrabajo) {
-            roundActual++;
-          }
+          if (!esTrabajo) roundActual++;
 
           esTrabajo = !esTrabajo;
-          tiempoRestante =
-              esTrabajo ? widget.trabajoSeg : widget.descansoSeg;
+          tiempoRestante = esTrabajo ? widget.trabajoSeg : widget.descansoSeg;
+          hizoBeep = false;
+
+          player.play(AssetSource('sounds/bell.mp3'));
         }
       });
     });
   }
+
+
 
   String formatTime(int seconds) {
     final min = (seconds ~/ 60).toString().padLeft(2, '0');
@@ -218,6 +239,7 @@ class _IntervalTimerScreenState extends State<IntervalTimerScreen> {
   @override
   void dispose() {
     timer?.cancel();
+    player.dispose();
     super.dispose();
   }
 
@@ -231,40 +253,84 @@ class _IntervalTimerScreenState extends State<IntervalTimerScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Temporizador")),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(textoEstado, style: const TextStyle(fontSize: 24)),
-            const SizedBox(height: 16),
-            Text(
-              formatTime(tiempoRestante),
-              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "Round ${roundActual > widget.rounds ? widget.rounds : roundActual} de ${widget.rounds}",
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: togglePausa,
-                  icon: Icon(enPausa ? Icons.play_arrow : Icons.pause),
-                  label: Text(enPausa ? "Reanudar" : "Pausar"),
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        color: esTrabajo ? Colors.green[200] : Colors.red[200],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(textoEstado, style: const TextStyle(fontSize: 24)),
+              const SizedBox(height: 16),
+              Text(
+                formatTime(tiempoRestante),
+                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Round ${roundActual > widget.rounds ? widget.rounds : roundActual} de ${widget.rounds}",
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: togglePausa,
+                    icon: Icon(enPausa ? Icons.play_arrow : Icons.pause),
+                    label: Text(enPausa ? "Reanudar" : "Pausar"),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: volverAlMenu,
+                    icon: const Icon(Icons.home),
+                    label: const Text("Menú"),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class FinalScreen extends StatelessWidget {
+  const FinalScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.blue[100],
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "¡Terminaste el turno!",
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
                 ),
-                ElevatedButton.icon(
-                  onPressed: volverAlMenu,
-                  icon: const Icon(Icons.home),
-                  label: const Text("Menú"),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.home),
+                label: const Text("Menú"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
                 ),
-              ],
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
