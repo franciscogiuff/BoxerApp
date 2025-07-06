@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +35,17 @@ class _HomeBodyState extends State<HomeBody> {
   final TextEditingController trabajoController = TextEditingController();
   final TextEditingController descansoController = TextEditingController();
   final TextEditingController roundsController = TextEditingController();
+
+  void _abrirLinkedIn() async {
+    final url = Uri.parse("https://www.linkedin.com/in/francisco-giuffrida/");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No se pudo abrir el enlace de LinkedIn")),
+      );
+    }
+  }
 
   Widget _buildEditableCard({
     required String title,
@@ -117,6 +130,7 @@ class _HomeBodyState extends State<HomeBody> {
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
             backgroundColor: Colors.indigo,
+            foregroundColor: Colors.white,
           ),
           child: const Text(
             "Comenzar",
@@ -126,12 +140,29 @@ class _HomeBodyState extends State<HomeBody> {
         const Spacer(),
         Container(
           margin: const EdgeInsets.all(16),
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.indigo),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Text("https://www.linkedin.com/in/francisco-giuffrida/"),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: _abrirLinkedIn,
+                child: const FaIcon(
+                  FontAwesomeIcons.linkedin,
+                  color: Colors.blue,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                "Desarrollado por Francisco Giuffrida",
+                style: TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -191,7 +222,7 @@ class _IntervalTimerScreenState extends State<IntervalTimerScreen> {
           }
         } else {
 
-          if (!esTrabajo && roundActual == widget.rounds) {
+          if (esTrabajo && roundActual == widget.rounds) {
             timer?.cancel();
             Navigator.pushReplacement(
               context,
