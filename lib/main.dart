@@ -42,17 +42,13 @@ class _HomeBodyState extends State<HomeBody> {
   }) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        leading: Container(
-          width: 64,
-          height: 64,
-          color: Colors.grey[300],
-          child: const Icon(Icons.image, size: 32),
-        ),
-        title: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Column(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 4),
             Text(title),
             const SizedBox(height: 8),
             TextField(
@@ -66,7 +62,6 @@ class _HomeBodyState extends State<HomeBody> {
             ),
           ],
         ),
-        contentPadding: const EdgeInsets.all(16),
       ),
     );
   }
