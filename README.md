@@ -13,6 +13,7 @@ Some cool functionalities:
 * Cool design and UI.
 
 ## Project Structure
+```
 /lib
 ├── main.dart
 ├── core/
@@ -38,3 +39,4 @@ Some cool functionalities:
 └── sounds/
 ├── bell.mp3
 └── beep.mp3
+```
