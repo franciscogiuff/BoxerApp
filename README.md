@@ -1,18 +1,40 @@
-# timer_app_mob
+# Training Timer App
 
-A new Flutter project.
+This is a new timer app that will allow you to fix your training sessions according to your needs.
 
-## Getting Started
+## Highlights
 
-This project is a starting point for a Flutter application.
+This app is specially designed to help martial art athletes to prepare for their figths.
 
-A few resources to get you started if this is your first Flutter project:
+Some cool functionalities:
+* Built-in common configurations to quickly start your training.
+* Choose time between minutes and seconds.
+* Custom configurations to better adapting to your training.
+* Cool design and UI.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# BoxerApp
-# BoxerApp
+## Project Structure
+/lib
+├── main.dart
+├── core/
+│   ├── utils/
+│   │   └── time_formatter.dart
+│   └── widgets/
+│       └── editable_card.dart
+├── features/
+│   ├── home/
+│   │   ├── presentation/
+│   │   │   ├── home_page.dart
+│   │   │   └── home_body.dart
+│   │   └── controllers/
+│   │       └── home_controller.dart (opcional)
+│   ├── timer/
+│   │   ├── presentation/
+│   │   │   └── timer_screen.dart
+│   │   └── controllers/
+│   │       └── timer_controller.dart (opcional)
+│   └── final/
+│       └── final_screen.dart
+└── assets/
+└── sounds/
+├── bell.mp3
+└── beep.mp3
