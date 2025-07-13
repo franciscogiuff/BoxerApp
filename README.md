@@ -36,7 +36,7 @@ Some cool functionalities:
 │   └── final/
 │       └── final_screen.dart
 └── assets/
-└── sounds/
-├── bell.mp3
-└── beep.mp3
+    └── sounds/
+        ├── bell.mp3
+        └── beep.mp3
 ```
