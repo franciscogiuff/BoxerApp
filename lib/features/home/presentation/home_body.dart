@@ -15,6 +15,10 @@ class _HomeBodyState extends State<HomeBody> {
   final TextEditingController trabajoController = TextEditingController();
   final TextEditingController descansoController = TextEditingController();
   final TextEditingController roundsController = TextEditingController();
+  
+  // Estado para controlar si los tiempos están en minutos
+  bool trabajoEnMinutos = false;
+  bool descansoEnMinutos = false;
 
   void _abrirLinkedIn() async {
     final url = Uri.parse("https://www.linkedin.com/in/francisco-giuffrida/");
@@ -28,9 +32,18 @@ class _HomeBodyState extends State<HomeBody> {
   }
 
   void _comenzar() {
-    final trabajo = int.tryParse(trabajoController.text) ?? 0;
-    final descanso = int.tryParse(descansoController.text) ?? 0;
+    // Obtener los valores y convertir a segundos si están en minutos
+    int trabajo = int.tryParse(trabajoController.text) ?? 0;
+    int descanso = int.tryParse(descansoController.text) ?? 0;
     final rounds = int.tryParse(roundsController.text) ?? 0;
+    
+    // Convertir a segundos si están en minutos
+    if (trabajoEnMinutos) {
+      trabajo = trabajo * 60;
+    }
+    if (descansoEnMinutos) {
+      descanso = descanso * 60;
+    }
 
     if (trabajo > 0 && descanso > 0 && rounds > 0) {
       Navigator.push(
@@ -55,16 +68,28 @@ class _HomeBodyState extends State<HomeBody> {
     return Column(
       children: [
         EditableCard(
-          title: "Trabajo en segundos",
+          title: "Duración del trabajo",
           label: "Tiempo de trabajo",
           controller: trabajoController,
           hint: "Ej: 5",
+          showTimeSwitch: true,
+          onTimeUnitChanged: (isMinutes) {
+            setState(() {
+              trabajoEnMinutos = isMinutes;
+            });
+          },
         ),
         EditableCard(
-          title: "Tiempo de descanso en segundos",
+          title: "Duración del descanso",
           label: "Tiempo de descanso",
           controller: descansoController,
           hint: "Ej: 2",
+          showTimeSwitch: true,
+          onTimeUnitChanged: (isMinutes) {
+            setState(() {
+              descansoEnMinutos = isMinutes;
+            });
+          },
         ),
         EditableCard(
           title: "Cantidad de rounds",
