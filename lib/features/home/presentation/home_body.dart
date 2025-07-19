@@ -31,6 +31,31 @@ class _HomeBodyState extends State<HomeBody> {
     }
   }
 
+  // Método para limpiar todos los campos
+  void _limpiarCampos() {
+    setState(() {
+      trabajoController.clear();
+      descansoController.clear();
+      roundsController.clear();
+      trabajoEnMinutos = false;
+      descansoEnMinutos = false;
+    });
+  }
+
+  // Método para establecer una configuración predefinida
+  void _establecerConfiguracion(int trabajoMin, int descansoMin, int rounds) {
+    setState(() {
+      // Si ya está en minutos, mantener el valor, si no, convertir a segundos
+      trabajoController.text = trabajoMin.toString();
+      descansoController.text = descansoMin.toString();
+      roundsController.text = rounds.toString();
+      
+      // Establecer las unidades a minutos
+      trabajoEnMinutos = true;
+      descansoEnMinutos = true;
+    });
+  }
+
   void _comenzar() {
     // Obtener los valores y convertir a segundos si están en minutos
     int trabajo = int.tryParse(trabajoController.text) ?? 0;
@@ -73,6 +98,7 @@ class _HomeBodyState extends State<HomeBody> {
           controller: trabajoController,
           hint: "Ej: 5",
           showTimeSwitch: true,
+          isMinutes: trabajoEnMinutos,
           onTimeUnitChanged: (isMinutes) {
             setState(() {
               trabajoEnMinutos = isMinutes;
@@ -85,6 +111,7 @@ class _HomeBodyState extends State<HomeBody> {
           controller: descansoController,
           hint: "Ej: 2",
           showTimeSwitch: true,
+          isMinutes: descansoEnMinutos,
           onTimeUnitChanged: (isMinutes) {
             setState(() {
               descansoEnMinutos = isMinutes;
@@ -109,6 +136,39 @@ class _HomeBodyState extends State<HomeBody> {
             "Comenzar",
             style: TextStyle(fontSize: 18),
           ),
+        ),
+        const SizedBox(height: 20),
+        // Botones de configuración rápida
+        const Text('Configuraciones rápidas:', style: TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              onPressed: () => _establecerConfiguracion(3, 1, 5),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue[100],
+                foregroundColor: Colors.blue[900],
+              ),
+              child: const Text('3/1/5'),
+            ),
+            ElevatedButton(
+              onPressed: () => _establecerConfiguracion(2, 1, 10),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green[100],
+                foregroundColor: Colors.green[900],
+              ),
+              child: const Text('2/1/10'),
+            ),
+            ElevatedButton(
+              onPressed: _limpiarCampos,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[100],
+                foregroundColor: Colors.red[900],
+              ),
+              child: const Text('Borrar'),
+            ),
+          ],
         ),
         const Spacer(),
         Container(

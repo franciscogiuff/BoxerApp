@@ -7,6 +7,7 @@ class EditableCard extends StatefulWidget {
   final String hint;
   final bool showTimeSwitch;
   final ValueChanged<bool>? onTimeUnitChanged;
+  final bool isMinutes;
 
   const EditableCard({
     super.key,
@@ -16,6 +17,7 @@ class EditableCard extends StatefulWidget {
     required this.hint,
     this.showTimeSwitch = false,
     this.onTimeUnitChanged,
+    this.isMinutes = false,
   });
 
   @override
@@ -44,6 +46,22 @@ class _EditableCardState extends State<EditableCard> {
         widget.onTimeUnitChanged!(value);
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _isMinutes = widget.isMinutes;
+  }
+
+  @override
+  void didUpdateWidget(EditableCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isMinutes != widget.isMinutes) {
+      setState(() {
+        _isMinutes = widget.isMinutes;
+      });
+    }
   }
 
   @override
