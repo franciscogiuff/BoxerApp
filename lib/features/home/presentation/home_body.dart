@@ -43,16 +43,16 @@ class _HomeBodyState extends State<HomeBody> {
   }
 
   // Método para establecer una configuración predefinida
-  void _establecerConfiguracion(int trabajoMin, int descansoMin, int rounds) {
+  void _establecerConfiguracion(int trabajo, int descanso, int rounds, {required bool enMinutos}) {
     setState(() {
-      // Si ya está en minutos, mantener el valor, si no, convertir a segundos
-      trabajoController.text = trabajoMin.toString();
-      descansoController.text = descansoMin.toString();
+      // Establecer los valores directamente (sin conversión, ya vienen en la unidad correcta)
+      trabajoController.text = trabajo.toString();
+      descansoController.text = descanso.toString();
       roundsController.text = rounds.toString();
       
-      // Establecer las unidades a minutos
-      trabajoEnMinutos = true;
-      descansoEnMinutos = true;
+      // Establecer las unidades según corresponda
+      trabajoEnMinutos = enMinutos;
+      descansoEnMinutos = enMinutos;
     });
   }
 
@@ -90,8 +90,37 @@ class _HomeBodyState extends State<HomeBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Botones de acción en la parte superior
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: _comenzar,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    backgroundColor: Colors.indigo,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text("Comenzar", style: TextStyle(fontSize: 16)),
+                ),
+                ElevatedButton(
+                  onPressed: _limpiarCampos,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    backgroundColor: Colors.red[100],
+                    foregroundColor: Colors.red[900],
+                  ),
+                  child: const Text('Borrar', style: TextStyle(fontSize: 16)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
         EditableCard(
           title: "Duración del trabajo",
           label: "Tiempo de trabajo",
@@ -125,27 +154,18 @@ class _HomeBodyState extends State<HomeBody> {
           hint: "Ej: 3",
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: _comenzar,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-            backgroundColor: Colors.indigo,
-            foregroundColor: Colors.white,
-          ),
-          child: const Text(
-            "Comenzar",
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
-        const SizedBox(height: 20),
-        // Botones de configuración rápida
+        // Título de configuraciones rápidas
         const Text('Configuraciones rápidas:', style: TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        
+        // Configuraciones en minutos
+        const Text('En minutos:', style: TextStyle(fontStyle: FontStyle.italic)),
         const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: () => _establecerConfiguracion(3, 1, 5),
+              onPressed: () => _establecerConfiguracion(3, 1, 5, enMinutos: true),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue[100],
                 foregroundColor: Colors.blue[900],
@@ -153,26 +173,45 @@ class _HomeBodyState extends State<HomeBody> {
               child: const Text('3/1/5'),
             ),
             ElevatedButton(
-              onPressed: () => _establecerConfiguracion(2, 1, 10),
+              onPressed: () => _establecerConfiguracion(2, 1, 10, enMinutos: true),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green[100],
                 foregroundColor: Colors.green[900],
               ),
               child: const Text('2/1/10'),
             ),
+          ],
+        ),
+        
+        const SizedBox(height: 12),
+        
+        // Configuraciones en segundos
+        const Text('En segundos:', style: TextStyle(fontStyle: FontStyle.italic)),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
             ElevatedButton(
-              onPressed: _limpiarCampos,
+              onPressed: () => _establecerConfiguracion(30, 10, 5, enMinutos: false),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[100],
-                foregroundColor: Colors.red[900],
+                backgroundColor: Colors.purple[100],
+                foregroundColor: Colors.purple[900],
               ),
-              child: const Text('Borrar'),
+              child: const Text('30/10/5'),
+            ),
+            ElevatedButton(
+              onPressed: () => _establecerConfiguracion(20, 5, 10, enMinutos: false),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange[100],
+                foregroundColor: Colors.orange[900],
+              ),
+              child: const Text('20/5/10'),
             ),
           ],
         ),
-        const Spacer(),
+        
+        const SizedBox(height: 12),
         Container(
-          margin: const EdgeInsets.all(16),
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.indigo),
@@ -183,21 +222,24 @@ class _HomeBodyState extends State<HomeBody> {
             children: [
               GestureDetector(
                 onTap: _abrirLinkedIn,
-                child: const FaIcon(
-                  FontAwesomeIcons.linkedin,
-                  color: Colors.blue,
-                  size: 20,
+                child: const Row(
+                  children: [
+                    FaIcon(FontAwesomeIcons.linkedin, size: 20, color: Colors.indigo),
+                    SizedBox(width: 8),
+                    Text("Francisco Giuffrida", style: TextStyle(color: Colors.indigo)),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                "Desarrollado por Francisco Giuffrida",
-                style: TextStyle(fontSize: 14),
               ),
             ],
           ),
         ),
-      ],
+        const SizedBox(height: 20),
+            const SizedBox(height: 20),
+            const SizedBox(height: 20),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -101,7 +101,7 @@ class _EditableCardState extends State<EditableCard> {
                 hintText: widget.hint,
                 border: const OutlineInputBorder(),
                 isDense: true,
-                suffixText: _isMinutes ? 'min' : 'seg',
+                suffixText: widget.showTimeSwitch ? (_isMinutes ? 'min' : 'seg') : null,
               ),
             ),
           ],
