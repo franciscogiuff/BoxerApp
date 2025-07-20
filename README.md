@@ -11,6 +11,7 @@ Some cool functionalities:
 * Choose time between minutes and seconds.
 * Custom configurations to better adapting to your training.
 * Cool design and UI.
+* History of your training sessions.
 
 ## Project Structure
 ```
