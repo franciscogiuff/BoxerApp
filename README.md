@@ -4,7 +4,7 @@ This is a new timer app that will allow you to fix your training sessions accord
 
 ## Highlights
 
-This app is specially designed to help martial art athletes to prepare for their figths.
+This app is specially designed to help martial art athletes to prepare for their fights.
 
 Some cool functionalities:
 * Built-in common configurations to quickly start your training.
