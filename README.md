@@ -1,6 +1,6 @@
 # Training Timer App
 
-This is a new timer app that will allow you to fix your training sessions according to your needs.
+	This is a new Timer app that will allow you to fix your training sessions according to your needs.
 
 ## Highlights
 
